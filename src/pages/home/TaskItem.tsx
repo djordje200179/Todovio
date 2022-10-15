@@ -1,5 +1,5 @@
 import { TaskItemModel } from "../../store/tasks/models";
-import { Form, InputGroup } from "react-bootstrap";
+import { Form, InputGroup, ListGroup } from "react-bootstrap";
 import { ChangeEvent } from "react";
 
 interface Props {
@@ -12,12 +12,14 @@ interface Props {
 
 export function TaskItem({ item, index, onCompletedToggle, onTextChange }: Props) {
 	return (
-// postaviti klasu na list-group-item list-group-item-dark
-		<InputGroup as="li" className="">
-			<InputGroup.Checkbox value={item.completed}
-			                     onChange={(event: ChangeEvent<HTMLInputElement>) => onCompletedToggle(index, event.target.checked)}/>
-			<Form.Control value={item.text}
-			              onChange={event => onTextChange(index, event.target.value)}/>
-		</InputGroup>
+		<ListGroup.Item as="li" variant="dark">
+			<InputGroup>
+				<InputGroup.Checkbox value={item.completed}
+				                     onChange={(event: ChangeEvent<HTMLInputElement>) => onCompletedToggle(index, event.target.checked)}/>
+				<Form.Control value={item.text}
+				              onChange={event => onTextChange(index, event.target.value)}/>
+			</InputGroup>
+		</ListGroup.Item>
+
 	);
 }

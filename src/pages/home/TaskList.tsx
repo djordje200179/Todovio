@@ -7,7 +7,7 @@ import { fetchOwnTasks } from "../../store/tasks/thunks";
 export default function TaskList() {
 	const dispatch = useDispatch();
 
-	useEffect(() => { dispatch(fetchOwnTasks(true)); }, []);
+	useEffect(() => { dispatch(fetchOwnTasks(true)); }, [dispatch]);
 
 	const tasks = useSelector(state => selectOwnTasks(state))!;
 

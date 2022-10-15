@@ -1,4 +1,4 @@
-import { Card } from "react-bootstrap";
+import { Card, ListGroup } from "react-bootstrap";
 import styles from "./TaskView.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TaskModel } from "../../store/tasks/models";
@@ -34,7 +34,7 @@ export default function TaskView({ task }: Props) {
 
 			<Card.Body>
 				{showItems && (
-					<ul className="list-group list-group-flush">
+					<ListGroup as="ul" variant="flush">
 						{task.items.map((item, index) => (
 							<TaskItem item={item}
 							          key={index}
@@ -43,7 +43,7 @@ export default function TaskView({ task }: Props) {
 							          onTextChange={onChangeTaskItemText}/>
 						))
 						}
-					</ul>
+					</ListGroup>
 				)}
 			</Card.Body>
 		</Card>
