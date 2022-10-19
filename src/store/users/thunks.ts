@@ -67,6 +67,23 @@ export function signIn(email: string, password: string): Thunk<Promise<Status>> 
 	};
 }
 
+export function signInWithGoogle(): Thunk<Promise<Status>> {
+	return async dispatch => {
+		try {
+			const provider = new GoogleAuthProvider();
+			const { user } = await signInWithPopup(auth, provider);
+			dispatch(setCurrentUser(user.uid));
+
+			return Status.Success;
+		} catch (e:any) {
+			if (e.code === "auth/user-not-found")
+				return Status.UserDoesntExist;
+
+			return Status.Fail;
+		}
+	};
+}
+
 export function signOut(): Thunk<Promise<Status>> {
 	return async dispatch => {
 		try {
