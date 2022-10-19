@@ -4,7 +4,8 @@ import {
 	createUserWithEmailAndPassword as fbSignUp, 
 	signInWithEmailAndPassword as fbSignIn, 
 	signInWithPopup as fbSignInWithPopup,
-	signOut as fbSignOut
+	signOut as fbSignOut,
+	GoogleAuthProvider
 } from "firebase/auth";
 import { auth, firestore } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
