@@ -21,10 +21,26 @@ export default function AuthControls() {
 		}
 	}
 
+	async function onSignInWithGoogle() {
+		const status = await dispatch(signInWithGoogle());
+
+		switch (status) {
+			case Status.Success:
+				navigate("/", { replace: true });
+				break;
+			case Status.UserDoesntExist:
+				console.log("User doesn't exist");
+				break;
+		}
+	}
+
 	const signInPopover = (
 		<Popover id="popover-basic">
 			<Popover.Body>
-				<LoginForm action="Sign in" onSubmit={onSignIn}/>
+				<Fragment>
+					<LoginForm action="Sign in" onSubmit={onSignIn}/>
+					<Button variant="outline-primary" className="mx-1" onClick={onSignInWithGoogle}>Sign in with Google</Button>
+				</Fragment>
 			</Popover.Body>
 		</Popover>
 	);
