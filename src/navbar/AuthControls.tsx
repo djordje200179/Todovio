@@ -2,7 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, OverlayTrigger, Popover } from "react-bootstrap";
 import LoginForm from "../components/LoginForm";
 import { useDispatch } from "../store/store";
-import { Status, signIn } from "../store/users/thunks";
+import { Status, signIn, signInWithGoogle } from "../store/users/thunks";
+import { Fragment } from "react";
 
 export default function AuthControls() {
 	const dispatch = useDispatch();
