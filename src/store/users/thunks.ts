@@ -1,6 +1,11 @@
 import { Thunk } from "../store";
 import { setCurrentUser, setUser } from "./slice";
-import { createUserWithEmailAndPassword as fbSignUp, signInWithEmailAndPassword as fbSignIn, signOut as fbSignOut } from "firebase/auth";
+import { 
+	createUserWithEmailAndPassword as fbSignUp, 
+	signInWithEmailAndPassword as fbSignIn, 
+	signInWithPopup as fbSignInWithPopup,
+	signOut as fbSignOut
+} from "firebase/auth";
 import { auth, firestore } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { userConverter, userFirestoreConverter, UserModel } from "./models";
@@ -71,7 +76,7 @@ export function signInWithGoogle(): Thunk<Promise<Status>> {
 	return async dispatch => {
 		try {
 			const provider = new GoogleAuthProvider();
-			const { user } = await signInWithPopup(auth, provider);
+			const { user } = await fbSignInWithPopup(auth, provider);
 			dispatch(setCurrentUser(user.uid));
 
 			return Status.Success;
