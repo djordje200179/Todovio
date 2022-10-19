@@ -4,7 +4,9 @@ import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
 import SignUpPage from "./pages/signup/SignUpPage";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas, faListCheck, faAngleDown, faEnvelope, faKey, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { fas, 
+	faListCheck, faAngleDown, faEnvelope, faKey, faTrashCan
+} from "@fortawesome/free-solid-svg-icons";
 import Header from "./navbar/Header";
 
 library.add(fas, faListCheck, faAngleDown, faEnvelope, faKey, faTrashCan);
