@@ -12,7 +12,7 @@ export function fetchUser(uid: string, force?: boolean): Thunk<Promise<UserModel
 		const state = getState();
 		const oldData = selectUser(state, uid);
 
-		if(!force && oldData !== undefined)
+		if(!force && oldData)
 			return oldData;
 
 		const ref  = doc(firestore, "users", uid).withConverter(userFirestoreConverter);

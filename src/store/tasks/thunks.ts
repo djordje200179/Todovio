@@ -11,7 +11,7 @@ export function fetchOwnTasks(force?: boolean): Thunk<Promise<TaskModel[] | null
 		const state   = getState();
 		const oldData = selectOwnTasks(state);
 
-		if (!force && oldData !== undefined)
+		if (!force && oldData)
 			return oldData;
 
 		const userUid = selectCurrentUserUid(state);
