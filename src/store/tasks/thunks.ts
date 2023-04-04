@@ -1,7 +1,7 @@
 import { Thunk } from "../store";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { firestore } from "../../firebase";
-import { taskConverter, taskFirestoreConverter, TaskModel } from "./models";
+import { taskConverter, taskFirestoreConverter, TaskModel} from "./models";
 import { resetEdited, setTasks } from "./slice";
 import {selectCurrentUserGroupUids, selectCurrentUserUid} from "../users/selectors";
 import {selectAllGroupTasks, selectGroupTasks, selectOwnTasks} from "./selectors";
@@ -90,17 +90,18 @@ export function fetchAvailableTasks(force?: boolean): Thunk<Promise<TaskModel[] 
 	}
 }
 
-export function updateTask(taskUid: string): Thunk {
+export function updateTask(groupUid : string | null, taskUid: string): Thunk {
 	return async (dispatch, getState) => {
 		const state = getState();
-		const tasks = state.tasks.ownTasks;
-		const task  = tasks.find(task => task.uid === taskUid)!;
 
-		const userUid = selectCurrentUserUid(state);
-		if(!userUid)
-			return;
+		const tasks = groupUid ? selectGroupTasks(state, groupUid)! : selectOwnTasks(state)!;
+		const task = tasks.find(task => task.uid === taskUid)!;
 
-		const ref = doc(firestore, "users", userUid, "tasks", taskUid).withConverter(taskFirestoreConverter);
+		const ref = doc(
+			firestore,
+			task.isGroup ? "groups" : "users", task.ownerUid, "tasks", task.uid
+		).withConverter(taskFirestoreConverter);
+
 		await updateDoc(ref, task);
 
 		dispatch(resetEdited(null, taskUid));

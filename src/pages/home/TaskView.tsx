@@ -7,6 +7,7 @@ import { TaskItem } from "./TaskItem";
 import {useDispatch, useSelector} from "../../store/store";
 import {selectGroup} from "../../store/groups/selectors";
 import {changeTaskItemText, toggleTaskItem} from "../../store/tasks/slice";
+import {updateTask} from "../../store/tasks/thunks";
 
 interface Props {
 	task: TaskModel;
@@ -19,10 +20,15 @@ export default function TaskView({ task }: Props) {
 
 	function onChangeTaskItemCompleted(index: number, newState: boolean) {
 		dispatch(toggleTaskItem(task.isGroup ? task.ownerUid : null, task.uid, index));
+		dispatch(updateTask(task.isGroup ? task.ownerUid : null, task.uid));
 	}
 
 	function onChangeTaskItemText(index: number, newText: string) {
 		dispatch(changeTaskItemText(task.isGroup ? task.ownerUid : null, task.uid, index, newText));
+	}
+
+	function onTaskItemTextChanged(index: number, newText: string) {
+		dispatch(updateTask(task.isGroup ? task.ownerUid : null, task.uid));
 	}
 
 	// eslint-disable-next-line react-hooks/rules-of-hooks
@@ -60,7 +66,8 @@ export default function TaskView({ task }: Props) {
 							          key={index}
 							          index={index}
 							          onCompletedToggle={onChangeTaskItemCompleted}
-							          onTextChange={onChangeTaskItemText}/>
+							          onTextChanging={onChangeTaskItemText}
+									  onTextChanged={onTaskItemTextChanged}/>
 						))
 						}
 					</ListGroup>
