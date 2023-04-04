@@ -20,6 +20,7 @@ export interface FirestoreTaskModel {
 export interface ReduxTaskModel {
 	readonly uid: string;
 	readonly ownerUid: string;
+	readonly isGroup: boolean;
 
 	readonly creationTime: number;
 	editTime: number;
@@ -33,6 +34,7 @@ export interface ReduxTaskModel {
 export interface TaskModel {
 	readonly uid: string;
 	readonly ownerUid: string;
+	readonly isGroup: boolean;
 
 	readonly created: Date;
 	readonly edited: Date;
@@ -66,10 +68,12 @@ export const taskFirestoreConverter: FirestoreDataConverter<ReduxTaskModel> = {
 		const ownerUid = snap.ref.parent.parent!.id;
 		const creationTime = (data.created as Timestamp).toMillis();
 		const editTime = (data.edited as Timestamp).toMillis();
+		const isGroup = snap.ref.parent.parent!.parent.id === "groups";
 
 		return {
 			uid: snap.id,
 			ownerUid,
+			isGroup,
 
 			creationTime,
 			editTime,
