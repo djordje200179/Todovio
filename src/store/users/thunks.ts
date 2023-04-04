@@ -1,5 +1,5 @@
 import { Thunk } from "../store";
-import { setCurrentUser, setUser } from "./slice";
+import { setCurrentUserUid, setUser } from "./slice";
 import { 
 	createUserWithEmailAndPassword as fbSignUp, 
 	signInWithEmailAndPassword as fbSignIn, 
@@ -10,7 +10,7 @@ import {
 import { auth, firestore } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { userConverter, userFirestoreConverter, UserModel } from "./models";
-import { selectUser } from "./selectors";
+import {selectCurrentUserUid, selectUser} from "./selectors";
 import { resetTasks } from "../tasks/slice";
 
 export function fetchUser(uid: string, force?: boolean): Thunk<Promise<UserModel | null>> {
@@ -34,6 +34,18 @@ export function fetchUser(uid: string, force?: boolean): Thunk<Promise<UserModel
 	};
 }
 
+export function fetchCurrentUser(force?:boolean) : Thunk<Promise<UserModel | null>> {
+	return async (dispatch, getState) => {
+		const state = getState();
+		const userUid = selectCurrentUserUid(state);
+
+		if(!userUid)
+			return null;
+
+		return dispatch(fetchUser(userUid, force));
+	};
+}
+
 export enum Status {
 	Success,
 	Fail,
@@ -45,7 +57,7 @@ export function signUp(email: string, password: string): Thunk<Promise<Status>> 
 	return async dispatch => {
 		try {
 			const { user } = await fbSignUp(auth, email, password);
-			dispatch(setCurrentUser(user.uid));
+			dispatch(setCurrentUserUid(user.uid));
 
 			return Status.Success;
 		} catch (e:any) {
@@ -61,7 +73,7 @@ export function signIn(email: string, password: string): Thunk<Promise<Status>> 
 	return async dispatch => {
 		try {
 			const { user } = await fbSignIn(auth, email, password);
-			dispatch(setCurrentUser(user.uid));
+			dispatch(setCurrentUserUid(user.uid));
 
 			return Status.Success;
 		} catch (e:any) {
@@ -78,7 +90,7 @@ export function signInWithGoogle(): Thunk<Promise<Status>> {
 		try {
 			const provider = new GoogleAuthProvider();
 			const { user } = await fbSignInWithPopup(auth, provider);
-			dispatch(setCurrentUser(user.uid));
+			dispatch(setCurrentUserUid(user.uid));
 
 			return Status.Success;
 		} catch (e:any) {
@@ -94,7 +106,7 @@ export function signOut(): Thunk<Promise<Status>> {
 	return async dispatch => {
 		try {
 			await fbSignOut(auth);
-			dispatch(setCurrentUser(null));
+			dispatch(setCurrentUserUid(null));
 			dispatch(resetTasks());
 
 			return Status.Success;

@@ -10,11 +10,11 @@ export const selectUser = createSelector(
 	],
 	(users: UsersMap, userUid: string) => {
 		const reduxModel = users[userUid];
-		return userConverter(reduxModel);
+		return reduxModel ? userConverter(reduxModel) : null;
 	}
 );
 
-export const selectCurrentUserUid = (state: RootState) => state.users.currentUser;
+export const selectCurrentUserUid = (state: RootState) => state.users.currentUserUid;
 
 export const selectIsUserLoggedIn = (state: RootState) => selectCurrentUserUid(state) !== null;
 
@@ -22,3 +22,8 @@ export const selectCurrentUser = (state: RootState) => {
 	const currentUserUid = selectCurrentUserUid(state);
 	return currentUserUid ? selectUser(state, currentUserUid) : null;
 };
+
+export const selectCurrentUserGroupUids = (state: RootState) => {
+	const currentUser = selectCurrentUser(state);
+	return currentUser?.groupUids;
+}

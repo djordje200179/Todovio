@@ -2,11 +2,13 @@ import { AnyAction, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch as useReduxDispatch, useSelector as useReduxSelector } from "react-redux";
 import UsersReducer from "./users/slice";
 import TasksReducer from "./tasks/slice";
+import GroupsReducer from "./groups/slice";
 
 const store = configureStore({
 	reducer: {
 		users: UsersReducer,
-		tasks: TasksReducer
+		tasks: TasksReducer,
+		groups: GroupsReducer
 	}
 });
 

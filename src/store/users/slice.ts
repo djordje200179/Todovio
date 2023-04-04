@@ -5,14 +5,14 @@ export type UsersMap = { [uid: string]: ReduxUserModel };
 
 interface UsersState {
 	users: UsersMap;
-	currentUser: string | null;
+	currentUserUid: string | null;
 }
 
 const slice = createSlice({
 	name: "user",
 	initialState: {
 		users: {},
-		currentUser: null
+		currentUserUid: null
 	} as UsersState,
 	reducers: {
 		resetUsers(state: UsersState) {
@@ -21,12 +21,12 @@ const slice = createSlice({
 		setUser(state: UsersState, action: PayloadAction<ReduxUserModel>) {
 			state.users[action.payload.uid] = action.payload;
 		},
-		setCurrentUser(state: UsersState, action: PayloadAction<string | null>) {
-			state.currentUser = action.payload;
+		setCurrentUserUid(state: UsersState, action: PayloadAction<string | null>) {
+			state.currentUserUid = action.payload;
 		}
 	}
 });
 
 export default slice.reducer;
 
-export const { resetUsers, setUser, setCurrentUser } = slice.actions;
+export const { resetUsers, setUser, setCurrentUserUid } = slice.actions;

@@ -2,18 +2,21 @@ import { FirestoreDataConverter, QueryDocumentSnapshot, SnapshotOptions } from "
 
 export interface FirestoreUserModel {
 	readonly name: string;
+	readonly groups: string[];
 }
 
 export interface ReduxUserModel {
 	readonly uid: string;
 
 	readonly name: string;
+	readonly groupUids: string[];
 }
 
 export interface UserModel {
 	readonly uid: string;
 
 	readonly name: string;
+	readonly groupUids: string[];
 }
 
 export function userConverter(reduxModel: ReduxUserModel): UserModel {
@@ -25,7 +28,8 @@ export function userConverter(reduxModel: ReduxUserModel): UserModel {
 export const userFirestoreConverter: FirestoreDataConverter<ReduxUserModel> = {
 	toFirestore(user: ReduxUserModel): FirestoreUserModel {
 		return {
-			name: user.name
+			name: user.name,
+			groups: user.groupUids
 		};
 	},
 	fromFirestore(snap: QueryDocumentSnapshot<FirestoreUserModel>, options: SnapshotOptions): ReduxUserModel {
@@ -34,7 +38,8 @@ export const userFirestoreConverter: FirestoreDataConverter<ReduxUserModel> = {
 		return {
 			uid: snap.id,
 
-			name: data.name
+			name: data.name,
+			groupUids: data.groups
 		};
 	}
 };

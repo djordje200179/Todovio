@@ -12,10 +12,10 @@ export default function TaskList() {
 	const tasks = useSelector(state => selectOwnTasks(state))!;
 
 	return (
-		<div className="d-flex flex-wrap bg-secondary">
+		<main className="d-flex flex-wrap bg-secondary">
 			{tasks?.map(task =>
 				<TaskView key={task.uid} task={task}/>
 			)}
-		</div>
+		</main>
 	);
 }

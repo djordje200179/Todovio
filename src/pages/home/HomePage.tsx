@@ -3,12 +3,16 @@ import { useSelector } from "../../store/store";
 import { selectIsUserLoggedIn } from "../../store/users/selectors";
 import TaskList from "./TaskList";
 import Index from "./Index";
+import Sidebar from "./Sidebar";
 
 export default function HomePage() {
 	const loggedIn = useSelector(state => selectIsUserLoggedIn(state));
 
 	const loggedInView = (
-		<TaskList/>
+		<div>
+			<Sidebar />
+			<TaskList/>
+		</div>
 	);
 
 	return (
