@@ -1,37 +1,33 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button, OverlayTrigger, Popover } from "react-bootstrap";
 import LoginForm from "../components/LoginForm";
-import { useDispatch } from "../store/store";
-import { Status, signIn, signInWithGoogle } from "../store/users/thunks";
 import { Fragment } from "react";
+import {GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {auth} from "../firebase";
 
 export default function AuthControls() {
-	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	async function onSignIn(email: string, password: string) {
-		const status = await dispatch(signIn(email, password));
+		try {
+			await signInWithEmailAndPassword(auth, email, password);
 
-		switch (status) {
-			case Status.Success:
-				navigate("/", { replace: true });
-				break;
-			case Status.UserDoesntExist:
+			navigate("/", { replace: true });
+		} catch (e:any) {
+			if (e.code === "auth/user-not-found")
 				console.log("User doesn't exist");
-				break;
 		}
 	}
 
 	async function onSignInWithGoogle() {
-		const status = await dispatch(signInWithGoogle());
+		try {
+			const provider = new GoogleAuthProvider();
+			await signInWithPopup(auth, provider);
 
-		switch (status) {
-			case Status.Success:
-				navigate("/", { replace: true });
-				break;
-			case Status.UserDoesntExist:
+			navigate("/", { replace: true });
+		} catch (e:any) {
+			if (e.code === "auth/user-not-found")
 				console.log("User doesn't exist");
-				break;
 		}
 	}
 
