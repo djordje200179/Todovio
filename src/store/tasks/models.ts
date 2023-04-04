@@ -27,8 +27,6 @@ export interface ReduxTaskModel {
 
 	readonly title: string;
 	readonly items: TaskItemModel[];
-
-	isEdited: boolean;
 }
 
 export interface TaskModel {
@@ -56,7 +54,7 @@ export const taskFirestoreConverter: FirestoreDataConverter<ReduxTaskModel> = {
 	toFirestore(task: ReduxTaskModel): FirestoreTaskModel {
 		return {
 			created: Timestamp.fromMillis(task.creationTime),
-			edited: task.isEdited ? serverTimestamp() : Timestamp.fromMillis(task.editTime),
+			edited: serverTimestamp(),
 
 			title: task.title,
 			items: task.items
@@ -79,9 +77,7 @@ export const taskFirestoreConverter: FirestoreDataConverter<ReduxTaskModel> = {
 			editTime,
 
 			title: data.title,
-			items: data.items,
-
-			isEdited: false
+			items: data.items
 		};
 	}
 };

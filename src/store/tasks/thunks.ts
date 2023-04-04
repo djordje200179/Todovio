@@ -2,7 +2,7 @@ import { Thunk } from "../store";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { firestore } from "../../firebase";
 import { taskConverter, taskFirestoreConverter, TaskModel} from "./models";
-import { resetEdited, setTasks } from "./slice";
+import { setTasks } from "./slice";
 import {selectCurrentUserGroupUids, selectCurrentUserUid} from "../users/selectors";
 import {selectAllGroupTasks, selectGroupTasks, selectOwnTasks} from "./selectors";
 
@@ -103,8 +103,6 @@ export function updateTask(groupUid : string | null, taskUid: string): Thunk {
 		).withConverter(taskFirestoreConverter);
 
 		await updateDoc(ref, task);
-
-		dispatch(resetEdited(null, taskUid));
 	};
 }
 

@@ -41,8 +41,6 @@ const slice = createSlice({
 				const item = task.items[itemIndex];
 
 				item.completed = !item.completed;
-
-				task.isEdited = true;
 			},
 			prepare(groupUid: string | null, taskUid: string, itemIndex: number) {
 				return {
@@ -59,31 +57,13 @@ const slice = createSlice({
 				const item = task.items[itemIndex];
 
 				item.text = newText;
-
-				task.isEdited = true;
 			},
 			prepare(groupUid: string | null, taskUid: string, itemIndex: number, newText: string) {
 				return {
 					payload: { groupUid, taskUid, itemIndex, newText }
 				};
 			}
-		},
-		resetEdited: {
-			reducer(state: TasksState, action: PayloadAction<{ groupUid: string | null, taskUid: string }>) {
-				const { groupUid, taskUid } = action.payload;
-
-				const tasks = groupUid === null ? state.ownTasks : state.groupTasks[groupUid];
-				const task = tasks.find(t => t.uid === taskUid)!;
-
-				task.isEdited = false;
-				task.editTime = (new Date()).getTime();
-			},
-			prepare(groupUid: string | null, taskUid: string) {
-				return {
-					payload: { groupUid, taskUid }
-				};
-			}
-		},
+		}
 	}
 });
 
@@ -93,6 +73,5 @@ export const {
 	resetTasks,
 	setTasks,
 	toggleTaskItem,
-	changeTaskItemText,
-	resetEdited
+	changeTaskItemText
 } = slice.actions;
