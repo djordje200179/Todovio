@@ -4,22 +4,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TaskModel } from "../../store/tasks/models";
 import { useState } from "react";
 import { TaskItem } from "./TaskItem";
-import {useSelector} from "../../store/store";
+import {useDispatch, useSelector} from "../../store/store";
 import {selectGroup} from "../../store/groups/selectors";
+import {changeTaskItemText, toggleTaskItem} from "../../store/tasks/slice";
 
 interface Props {
 	task: TaskModel;
 }
 
 export default function TaskView({ task }: Props) {
+	const dispatch = useDispatch();
+
 	const [showItems, setShowItems] = useState(false);
 
 	function onChangeTaskItemCompleted(index: number, newState: boolean) {
-
+		dispatch(toggleTaskItem(task.isGroup ? task.ownerUid : null, task.uid, index));
 	}
 
 	function onChangeTaskItemText(index: number, newText: string) {
-
+		dispatch(changeTaskItemText(task.isGroup ? task.ownerUid : null, task.uid, index, newText));
 	}
 
 	// eslint-disable-next-line react-hooks/rules-of-hooks

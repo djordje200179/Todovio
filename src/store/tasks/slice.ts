@@ -50,6 +50,24 @@ const slice = createSlice({
 				};
 			}
 		},
+		changeTaskItemText: {
+			reducer(state: TasksState, action: PayloadAction<{ groupUid: string | null, taskUid: string, itemIndex: number, newText: string }>) {
+				const { groupUid, taskUid, itemIndex, newText } = action.payload;
+
+				const tasks = groupUid === null ? state.ownTasks : state.groupTasks[groupUid];
+				const task = tasks.find(t => t.uid === taskUid)!;
+				const item = task.items[itemIndex];
+
+				item.text = newText;
+
+				task.isEdited = true;
+			},
+			prepare(groupUid: string | null, taskUid: string, itemIndex: number, newText: string) {
+				return {
+					payload: { groupUid, taskUid, itemIndex, newText }
+				};
+			}
+		},
 		resetEdited: {
 			reducer(state: TasksState, action: PayloadAction<{ groupUid: string | null, taskUid: string }>) {
 				const { groupUid, taskUid } = action.payload;
@@ -71,4 +89,10 @@ const slice = createSlice({
 
 export default slice.reducer;
 
-export const { resetTasks, setTasks, toggleTaskItem, resetEdited } = slice.actions;
+export const {
+	resetTasks,
+	setTasks,
+	toggleTaskItem,
+	changeTaskItemText,
+	resetEdited
+} = slice.actions;
