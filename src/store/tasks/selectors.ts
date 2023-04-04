@@ -32,3 +32,13 @@ export const selectAllGroupTasks = createSelector(
 		return tasks.map(taskConverter);
 	}
 );
+
+export const selectAvailableTasks = createSelector(
+	[
+		(state: RootState) => selectOwnTasks(state),
+		(state: RootState) => selectAllGroupTasks(state)
+	],
+	(ownTasks, groupTasks) => {
+		return [...ownTasks, ...groupTasks];
+	}
+);

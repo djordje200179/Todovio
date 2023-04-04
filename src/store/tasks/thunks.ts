@@ -3,8 +3,55 @@ import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { firestore } from "../../firebase";
 import { taskConverter, taskFirestoreConverter, TaskModel } from "./models";
 import { resetEdited, setTasks } from "./slice";
-import { selectCurrentUserUid } from "../users/selectors";
-import { selectOwnTasks } from "./selectors";
+import {selectCurrentUserGroupUids, selectCurrentUserUid} from "../users/selectors";
+import {selectAllGroupTasks, selectGroupTasks, selectOwnTasks} from "./selectors";
+
+export function fetchGroupTasks(groupUid: string, force?: boolean): Thunk<Promise<TaskModel[] | null>> {
+	return async (dispatch, getState) => {
+		const state = getState();
+		const oldData = selectGroupTasks(state, groupUid);
+
+		if (!force && oldData)
+			return oldData;
+
+		const ref  = collection(firestore, "groups", groupUid, "tasks").withConverter(taskFirestoreConverter);
+		const snap = await getDocs(ref);
+
+		const tasks = snap.docs.map(doc => doc.data());
+		dispatch(setTasks(groupUid, tasks));
+
+		return tasks.map(taskConverter);
+	}
+}
+
+export function fetchAllGroupTasks(force?: boolean): Thunk<Promise<TaskModel[] | null>> {
+	return async (dispatch, getState) => {
+		const state = getState();
+		const oldData = selectAllGroupTasks(state);
+
+		if (!force && oldData)
+			return oldData;
+
+		const userUid = selectCurrentUserUid(state);
+		if(!userUid)
+			return null;
+
+		const groupUids = selectCurrentUserGroupUids(state);
+		if(!groupUids)
+			return null;
+
+		for (const groupUid of groupUids) {
+			const ref  = collection(firestore, "groups", groupUid, "tasks").withConverter(taskFirestoreConverter);
+			const snap = await getDocs(ref);
+
+			const groupTasks = snap.docs.map(doc => doc.data());
+
+			dispatch(setTasks(groupUid, groupTasks));
+		}
+
+		return selectAllGroupTasks(state);
+	}
+}
 
 export function fetchOwnTasks(force?: boolean): Thunk<Promise<TaskModel[] | null>> {
 	return async (dispatch, getState) => {
@@ -26,6 +73,21 @@ export function fetchOwnTasks(force?: boolean): Thunk<Promise<TaskModel[] | null
 
 		return tasks.map(taskConverter);
 	};
+}
+
+export function fetchAvailableTasks(force?: boolean): Thunk<Promise<TaskModel[] | null>> {
+	return async (dispatch, getState) => {
+		const ownTasks = await dispatch(fetchOwnTasks(force));
+		const groupTasks = await dispatch(fetchAllGroupTasks(force));
+
+		let allTasks: TaskModel[] = [];
+		if(ownTasks)
+			allTasks = allTasks.concat(ownTasks);
+		if(groupTasks)
+			allTasks = allTasks.concat(groupTasks);
+
+		return allTasks;
+	}
 }
 
 export function updateTask(taskUid: string): Thunk {
