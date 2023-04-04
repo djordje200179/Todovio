@@ -7,7 +7,7 @@ interface Props {
 
 export default function GroupView({ group }: Props) {
     return (
-        <ListGroup.Item variant="dark">
+        <ListGroup.Item variant="dark" as="li">
             {group.name}
         </ListGroup.Item>
     );
