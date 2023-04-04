@@ -16,12 +16,10 @@ export default function GroupList() {
     const groups = useSelector(selectCurrentUserGroups);
 
     return (
-        <aside className="float-start bg-dark p-1" style={{width: 300}}>
-            <ListGroup as="ul">
-                {groups?.map(group =>
-                    group ? <GroupView key={group.uid} group={group}/> : null
-                )}
-            </ListGroup>
-        </aside>
+        <ListGroup as="ul">
+            {groups?.map(group =>
+                group ? <GroupView key={group.uid} group={group}/> : null
+            )}
+        </ListGroup>
     );
 }
