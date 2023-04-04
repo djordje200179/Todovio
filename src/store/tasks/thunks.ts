@@ -1,5 +1,5 @@
 import { Thunk } from "../store";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { firestore } from "../../firebase";
 import { taskConverter, taskFirestoreConverter, TaskModel} from "./models";
 import { setTasks } from "./slice";
@@ -94,7 +94,7 @@ export function updateTask(groupUid : string | null, taskUid: string): Thunk {
 	return async (dispatch, getState) => {
 		const state = getState();
 
-		const tasks = groupUid ? selectGroupTasks(state, groupUid)! : selectOwnTasks(state)!;
+		const tasks = groupUid ? state.tasks.groupTasks[groupUid] : state.tasks.ownTasks;
 		const task = tasks.find(task => task.uid === taskUid)!;
 
 		const ref = doc(
@@ -102,7 +102,7 @@ export function updateTask(groupUid : string | null, taskUid: string): Thunk {
 			task.isGroup ? "groups" : "users", task.ownerUid, "tasks", task.uid
 		).withConverter(taskFirestoreConverter);
 
-		await updateDoc(ref, task);
+		await setDoc(ref, task);
 	};
 }
 
