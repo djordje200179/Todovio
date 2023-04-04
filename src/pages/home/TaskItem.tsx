@@ -6,17 +6,17 @@ interface Props {
 	item: TaskItemModel;
 	index: number;
 
-	onCompletedToggle: (index: number, newState: boolean) => void;
+	onCompletedChanged: (index: number, newState: boolean) => void;
 	onTextChanging: (index: number, newText: string) => void;
 	onTextChanged: (index: number, newText: string) => void;
 }
 
-export function TaskItem({ item, index, onCompletedToggle, onTextChanging, onTextChanged }: Props) {
+export function TaskItem({ item, index, onCompletedChanged, onTextChanging, onTextChanged }: Props) {
 	return (
 		<ListGroup.Item as="li" variant="dark">
 			<InputGroup>
 				<InputGroup.Checkbox value={item.completed}
-				                     onChange={(event: ChangeEvent<HTMLInputElement>) => onCompletedToggle(index, event.target.checked)}/>
+				                     onChange={(event: ChangeEvent<HTMLInputElement>) => onCompletedChanged(index, event.target.checked)}/>
 				<Form.Control value={item.text}
 							  onBlur={event => onTextChanged(index, event.target.value)}
 				              onChange={event => onTextChanging(index, event.target.value)}/>

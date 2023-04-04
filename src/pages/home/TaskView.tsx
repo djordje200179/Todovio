@@ -6,7 +6,7 @@ import { useState } from "react";
 import { TaskItem } from "./TaskItem";
 import {useDispatch, useSelector} from "../../store/store";
 import {selectGroup} from "../../store/groups/selectors";
-import {changeTaskItemText, toggleTaskItem} from "../../store/tasks/slice";
+import {changeTaskItemText, changeTaskItemCompleted} from "../../store/tasks/slice";
 import {updateTask} from "../../store/tasks/thunks";
 
 interface Props {
@@ -18,8 +18,8 @@ export default function TaskView({ task }: Props) {
 
 	const [showItems, setShowItems] = useState(false);
 
-	function onChangeTaskItemCompleted(index: number, newState: boolean) {
-		dispatch(toggleTaskItem(task.isGroup ? task.ownerUid : null, task.uid, index));
+	function onTaskItemCompletedChanged(index: number, newState: boolean) {
+		dispatch(changeTaskItemCompleted(task.isGroup ? task.ownerUid : null, task.uid, index, newState));
 		dispatch(updateTask(task.isGroup ? task.ownerUid : null, task.uid));
 	}
 
@@ -65,7 +65,7 @@ export default function TaskView({ task }: Props) {
 							<TaskItem item={item}
 							          key={index}
 							          index={index}
-							          onCompletedToggle={onChangeTaskItemCompleted}
+							          onCompletedChanged={onTaskItemCompletedChanged}
 							          onTextChanging={onChangeTaskItemText}
 									  onTextChanged={onTaskItemTextChanged}/>
 						))
