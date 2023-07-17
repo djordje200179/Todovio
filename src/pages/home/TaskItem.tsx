@@ -1,6 +1,6 @@
 import { TaskItemModel } from "../../store/tasks/models";
 import { Form, InputGroup, ListGroup } from "react-bootstrap";
-import { ChangeEvent } from "react";
+import {ChangeEvent} from "react";
 
 interface Props {
 	item: TaskItemModel;
@@ -13,7 +13,7 @@ interface Props {
 
 export function TaskItem({ item, index, onCompletedChanged, onTextChanging, onTextChanged }: Props) {
 	return (
-		<ListGroup.Item as="li" variant="dark">
+		<ListGroup.Item as="li" className="bg-transparent p-0 task-item">
 			<InputGroup>
 				<InputGroup.Checkbox value={item.completed}
 				                     onChange={(event: ChangeEvent<HTMLInputElement>) => onCompletedChanged(index, event.target.checked)}/>
