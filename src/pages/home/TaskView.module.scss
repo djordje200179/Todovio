@@ -1,7 +1,12 @@
-article {
+.task {
 	width: 20rem
 }
 
-.icon {
+.arrowIcon {
 	font-size: 20px;
+}
+
+.itemList {
+	list-style-type: none;
+	padding: 0;
 }

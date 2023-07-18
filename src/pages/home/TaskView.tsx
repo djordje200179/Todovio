@@ -1,4 +1,4 @@
-import { Card, ListGroup } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import styles from "./TaskView.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TaskModel } from "../../store/tasks/models";
@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from "../../store/store";
 import {selectGroup} from "../../store/groups/selectors";
 import {changeTaskItemText, changeTaskItemCompleted} from "../../store/tasks/slice";
 import {updateTask} from "../../store/tasks/thunks";
+import classNames from "classnames";
 
 interface Props {
 	task: TaskModel;
@@ -47,20 +48,20 @@ export default function TaskView({ task }: Props) {
 	);
 
 	return (
-		<Card className="m-1 bg-dark" as="article">
+		<Card className={classNames("m-1", "bg-dark", styles.task)} as="article">
 			<Card.Header className="text-white d-flex justify-content-between align-items-center"
 			             onClick={() => setShowItems(prevState => !prevState)}>
 				{cardTitle}
 
 				<FontAwesomeIcon icon={showItems ? "arrow-up" : "arrow-down"}
-				                 color="white" className={styles.icon}/>
+				                 color="white" className={styles.arrowIcon}/>
 			</Card.Header>
 
 			<Card.Subtitle className="text-muted text-end mt-1 me-2">{task.edited.toLocaleDateString()}</Card.Subtitle>
 
 			<Card.Body>
 				{showItems && (
-					<ListGroup as="ul" variant="flush">
+					<ul className={styles.itemList}>
 						{task.items.map((item, index) => (
 							<TaskItem item={item}
 							          key={index}
@@ -70,7 +71,7 @@ export default function TaskView({ task }: Props) {
 									  onTextChanged={onTaskItemTextChanged}/>
 						))
 						}
-					</ListGroup>
+					</ul>
 				)}
 			</Card.Body>
 		</Card>
