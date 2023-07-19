@@ -1,40 +1,47 @@
 import {Thunk} from "../store";
-import {groupConverter, groupFirestoreConverter, GroupModel} from "./models";
 import {selectGroup} from "./selectors";
-import {doc, getDoc} from "firebase/firestore";
-import {firestore} from "../../firebase";
-import {setGroup} from "./slice";
-import {selectCurrentUserGroupUids} from "../users/selectors";
+import {GroupModel, setGroup} from "./slice";
+import supabaseClient from "../../supabase/client";
+import { selectCurrentUserGroupIds } from "../users/selectors";
 
-export function fetchGroup(uid: string, force?: boolean): Thunk<Promise<GroupModel | null>> {
-    return async (dispatch, getState) => {
-        const state = getState();
-        const oldData = selectGroup(state, uid);
+export function fetchGroup(id: number, force?: boolean): Thunk<Promise<GroupModel | null>> {
+	return async (dispatch, getState) => {
+		const state = getState();
+		const oldData = selectGroup(state, id);
 
-        if(!force && oldData)
-            return oldData;
+		if(!force && oldData)
+			return oldData;
 
-        const ref = doc(firestore, "groups", uid).withConverter(groupFirestoreConverter);
-        const snap = await getDoc(ref);
+		const { data, error } = await supabaseClient.from("groups").select("*").eq("id", id).single();
 
-        if (!snap.exists())
-            return null;
+		if (error) {
+			console.error(error);
+			return null;
+		}
 
-        const group = snap.data();
-        dispatch(setGroup(group));
+		dispatch(setGroup(data));
 
-        return groupConverter(group);
-    };
+		return data;
+	};
 }
 
 export function fetchCurrentUserGroups(force?: boolean): Thunk<Promise<(GroupModel|null)[] | null>> {
-    return async (dispatch, getState) => {
-        const state = getState();
-        const userGroupUids = selectCurrentUserGroupUids(state);
+	return async (dispatch, getState) => {
+		const state = getState();
+		const userGroupIds = selectCurrentUserGroupIds(state);
 
-        if (!userGroupUids)
-            return null;
+		if (!userGroupIds)
+			return null;
 
-        return await Promise.all(userGroupUids.map(uid => dispatch(fetchGroup(uid, force))));
-    };
+		const { data, error } = await supabaseClient.from("groups").select("*").in("id", userGroupIds);
+
+		if (error) {
+			console.error(error);
+			return null;
+		}
+
+		data.forEach(group => dispatch(setGroup(group)));
+		
+		return data;
+	};
 }

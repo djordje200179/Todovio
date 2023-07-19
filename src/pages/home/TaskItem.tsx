@@ -1,4 +1,4 @@
-import { TaskItemModel } from "../../store/tasks/models";
+import { TaskItemModel } from "../../store/tasks/slice";
 import { Form, InputGroup } from "react-bootstrap";
 import { ChangeEvent } from "react";
 

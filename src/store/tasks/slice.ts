@@ -1,66 +1,84 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ReduxTaskModel } from "./models";
+import { Database } from "../../supabase/models";
 
-export type GroupTasksMap = { [groupUid: string]: ReduxTaskModel[] };
+export type TaskModel = Database["public"]["Tables"]["tasks"]["Row"];
+export type TaskItemModel = Database["public"]["Tables"]["task_items"]["Row"];
+export type TasksMap = { [ownerId: string]: TaskModel[] };
+export type TasksItemsMap = { [taskId: string]: TaskItemModel[] };
 
 interface TasksState {
-	ownTasks: ReduxTaskModel[];
-	groupTasks: GroupTasksMap;
+	tasks: TasksMap;
+	taskItems: TasksItemsMap;
 }
 
 const slice = createSlice({
 	name: "tasks",
 	initialState: {
-		ownTasks: [],
-		groupTasks: {}
+		tasks: {},
+		taskItems: {}
 	} as TasksState,
 	reducers: {
 		resetTasks(state: TasksState) {
-			state.ownTasks   = [];
-			state.groupTasks = {};
+			state.tasks = {};
+			state.taskItems = {};
 		},
-		setTasks: {
-			reducer(state: TasksState, action: PayloadAction<{ groupUid: string | null, tasks: ReduxTaskModel[] }>) {
-				const { groupUid, tasks } = action.payload;
+		setTasks(state: TasksState, action: PayloadAction<TaskModel[]>) {
+			const tasks = {} as TasksMap;
 
-				if (groupUid === null)
-					state.ownTasks = tasks;
-				else
-					state.groupTasks[groupUid] = tasks;
-			},
-			prepare(groupUid: string | null, tasks: ReduxTaskModel[]) {
-				return { payload: { groupUid, tasks } };
-			}
+			action.payload.forEach(task => {
+				if (!tasks[task.owner])
+					tasks[task.owner] = [];
+
+				tasks[task.owner].push(task);
+			});
+
+			state.tasks = tasks;
+		},
+		setTasksItems(state: TasksState, action: PayloadAction<TaskItemModel[]>) {
+			const taskItems = {} as TasksItemsMap;
+
+			action.payload.forEach(item => {
+				if (!taskItems[item.task_id])
+					taskItems[item.task_id] = [];
+
+				taskItems[item.task_id].push(item);
+			});
+
+			state.taskItems = taskItems;
 		},
 		changeTaskItemCompleted: {
-			reducer(state: TasksState, action: PayloadAction<{ groupUid: string | null, taskUid: string, itemIndex: number, newState: boolean }>) {
-				const { groupUid, taskUid, itemIndex, newState } = action.payload;
+			reducer(state: TasksState, action: PayloadAction<{ taskId: number, itemId: number, newState: boolean }>) {
+				const { taskId, itemId, newState } = action.payload;
 
-				const tasks = groupUid === null ? state.ownTasks : state.groupTasks[groupUid];
-				const task = tasks.find(t => t.uid === taskUid)!;
-				const item = task.items[itemIndex];
+				const item = state.taskItems[taskId].find(item => item.item_id === itemId);
+				if(!item) {
+					console.error("The item does not exist");
+					return;
+				}
 
 				item.completed = newState;
 			},
-			prepare(groupUid: string | null, taskUid: string, itemIndex: number, newState: boolean) {
+			prepare(taskId: number, itemId: number, newState: boolean) {
 				return {
-					payload: { groupUid, taskUid, itemIndex, newState }
+					payload: { taskId, itemId, newState }
 				};
 			}
 		},
 		changeTaskItemText: {
-			reducer(state: TasksState, action: PayloadAction<{ groupUid: string | null, taskUid: string, itemIndex: number, newText: string }>) {
-				const { groupUid, taskUid, itemIndex, newText } = action.payload;
+			reducer(state: TasksState, action: PayloadAction<{ taskId: number, itemId: number, newText: string }>) {
+				const { taskId, itemId, newText } = action.payload;
 
-				const tasks = groupUid === null ? state.ownTasks : state.groupTasks[groupUid];
-				const task = tasks.find(t => t.uid === taskUid)!;
-				const item = task.items[itemIndex];
-
+				const item = state.taskItems[taskId].find(item => item.item_id === itemId);
+				if(!item) {
+					console.error("The item does not exist");
+					return;
+				}
+				
 				item.text = newText;
 			},
-			prepare(groupUid: string | null, taskUid: string, itemIndex: number, newText: string) {
+			prepare(taskId: number, itemId: number, newText: string) {
 				return {
-					payload: { groupUid, taskUid, itemIndex, newText }
+					payload: { taskId, itemId, newText }
 				};
 			}
 		}
@@ -72,6 +90,7 @@ export default slice.reducer;
 export const {
 	resetTasks,
 	setTasks,
+	setTasksItems,
 	changeTaskItemCompleted,
 	changeTaskItemText
 } = slice.actions;

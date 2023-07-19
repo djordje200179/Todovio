@@ -1,11 +1,11 @@
 import { Card } from "react-bootstrap";
 import styles from "./TaskView.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TaskModel } from "../../store/tasks/models";
+import { TaskModel, TaskItemModel } from "../../store/tasks/slice";
 import { useState } from "react";
 import { TaskItem } from "./TaskItem";
+import {selectTaskItems} from "../../store/tasks/selectors";
 import {useDispatch, useSelector} from "../../store/store";
-import {selectGroup} from "../../store/groups/selectors";
 import {changeTaskItemText, changeTaskItemCompleted} from "../../store/tasks/slice";
 import {updateTask} from "../../store/tasks/thunks";
 import classNames from "classnames";
@@ -17,23 +17,25 @@ interface Props {
 export default function TaskView({ task }: Props) {
 	const dispatch = useDispatch();
 
+	const taskItems = useSelector(state => selectTaskItems(state, task.id));
+
 	const [showItems, setShowItems] = useState(false);
 
 	function onTaskItemCompletedChanged(index: number, newState: boolean) {
-		dispatch(changeTaskItemCompleted(task.isGroup ? task.ownerUid : null, task.uid, index, newState));
-		dispatch(updateTask(task.isGroup ? task.ownerUid : null, task.uid));
+		dispatch(changeTaskItemCompleted(task.id, index, newState));
+		dispatch(updateTask(task.id));
 	}
 
 	function onChangeTaskItemText(index: number, newText: string) {
-		dispatch(changeTaskItemText(task.isGroup ? task.ownerUid : null, task.uid, index, newText));
+		dispatch(changeTaskItemText(task.id, index, newText));
 	}
 
 	function onTaskItemTextChanged(index: number, newText: string) {
-		dispatch(updateTask(task.isGroup ? task.ownerUid : null, task.uid));
+		dispatch(updateTask(task.id));
 	}
 
 	// eslint-disable-next-line react-hooks/rules-of-hooks
-	const groupName = task.isGroup ? useSelector(state => selectGroup(state, task.ownerUid))?.name : null;
+	/*const groupName = task.isGroup ? useSelector(state => selectGroup(state, task.owner))?.name : null;
 
 	const cardTitle = task.isGroup ? (
 		<span>
@@ -45,7 +47,11 @@ export default function TaskView({ task }: Props) {
 		<>
 			{task.title}
 		</>
-	);
+	);*/
+
+	const cardTitle = <>
+		{task.title}
+	</>;
 
 	return (
 		<Card className={classNames("m-1", "bg-dark", styles.task)} as="article">
@@ -57,12 +63,12 @@ export default function TaskView({ task }: Props) {
 				                 color="white" className={styles.arrowIcon}/>
 			</Card.Header>
 
-			<Card.Subtitle className="text-muted text-end mt-1 me-2">{task.edited.toLocaleDateString()}</Card.Subtitle>
+			<Card.Subtitle className="text-muted text-end mt-1 me-2">{task.edited_at}</Card.Subtitle>
 
 			<Card.Body>
 				{showItems && (
 					<ul className={styles.itemList}>
-						{task.items.map((item, index) => (
+						{taskItems.map((item, index) => (
 							<TaskItem item={item}
 							          key={index}
 							          index={index}

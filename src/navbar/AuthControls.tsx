@@ -2,33 +2,36 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, OverlayTrigger, Popover } from "react-bootstrap";
 import LoginForm from "../components/LoginForm";
 import { Fragment } from "react";
-import {GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import {auth} from "../firebase";
+import supabaseClient from "../supabase/client";
+import { AuthApiError } from "@supabase/supabase-js";
 
 export default function AuthControls() {
 	const navigate = useNavigate();
 
 	async function onSignIn(email: string, password: string) {
-		try {
-			await signInWithEmailAndPassword(auth, email, password);
+		const { data, error } = await supabaseClient.auth.signInWithPassword({
+			email: email,
+			password: password,
+		});
 
+		if (data)
 			navigate("/", { replace: true });
-		} catch (e:any) {
-			if (e.code === "auth/user-not-found")
+		else {
+			if (error instanceof AuthApiError)
 				console.log("User doesn't exist");
 		}
 	}
 
 	async function onSignInWithGoogle() {
-		try {
-			const provider = new GoogleAuthProvider();
-			await signInWithPopup(auth, provider);
+		// try {
+		// 	const provider = new GoogleAuthProvider();
+		// 	await signInWithPopup(auth, provider);
 
-			navigate("/", { replace: true });
-		} catch (e:any) {
-			if (e.code === "auth/user-not-found")
-				console.log("User doesn't exist");
-		}
+		// 	navigate("/", { replace: true });
+		// } catch (e:any) {
+		// 	if (e.code === "auth/user-not-found")
+		// 		console.log("User doesn't exist");
+		// }
 	}
 
 	const signInPopover = (

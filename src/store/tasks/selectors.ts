@@ -1,44 +1,31 @@
 import { RootState } from "../store";
-import { ReduxTaskModel, taskConverter } from "./models";
 import { createSelector } from "@reduxjs/toolkit";
-import { GroupTasksMap } from "./slice";
+import { selectCurrentUserId } from "../users/selectors";
+import { TasksItemsMap, TasksMap } from "./slice";
 
 export const selectOwnTasks = createSelector(
 	[
-		(state: RootState) => state.tasks.ownTasks
+		(state: RootState) => state.tasks.tasks,
+		selectCurrentUserId,
 	],
-	(tasks: ReduxTaskModel[]) => {
-		return tasks.map(taskConverter);
-	}
+	(tasks: TasksMap, userId: number | null) => userId ? tasks[userId] : []
 );
 
 export const selectGroupTasks = createSelector(
 	[
-		(state: RootState, groupUid: string) => state.tasks.groupTasks,
-		(state: RootState, groupUid: string) => groupUid
+		(state: RootState, groupId: number) => state.tasks.tasks,
+		(state: RootState, groupId: number) => groupId
 	],
-	(tasksMap: GroupTasksMap, groupUid: string) => {
-		const tasks = tasksMap[groupUid];
-		return tasks?.map(taskConverter);
-	}
+	(tasks: TasksMap, groupId: number) => groupId ? tasks[groupId] : []
 );
 
-export const selectAllGroupTasks = createSelector(
-	[
-		(state: RootState) => state.tasks.groupTasks
-	],
-	(tasksMap: GroupTasksMap) => {
-		const tasks = Object.values(tasksMap).flat();
-		return tasks.map(taskConverter);
-	}
-);
+export const selectAvailableTasks = (state: RootState) => 
+	Object.values(state.tasks.tasks).flat();
 
-export const selectAvailableTasks = createSelector(
+export const selectTaskItems = createSelector(
 	[
-		(state: RootState) => selectOwnTasks(state),
-		(state: RootState) => selectAllGroupTasks(state)
+		(state: RootState, taskId: number) => state.tasks.taskItems,
+		(state: RootState, taskId: number) => taskId
 	],
-	(ownTasks, groupTasks) => {
-		return [...ownTasks, ...groupTasks];
-	}
+	(taskItems: TasksItemsMap, taskId: number) => taskItems[taskId]
 );

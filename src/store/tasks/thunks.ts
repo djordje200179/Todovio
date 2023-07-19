@@ -1,108 +1,49 @@
 import { Thunk } from "../store";
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
-import { firestore } from "../../firebase";
-import { taskConverter, taskFirestoreConverter, TaskModel} from "./models";
-import { setTasks } from "./slice";
-import {selectCurrentUserGroupUids, selectCurrentUserUid} from "../users/selectors";
-import {selectAllGroupTasks, selectGroupTasks, selectOwnTasks} from "./selectors";
+import { selectAvailableTasks } from "./selectors";
+import { setTasks, setTasksItems } from "./slice";
+import supabaseClient from "../../supabase/client";
 
-export function fetchGroupTasks(groupUid: string, force?: boolean): Thunk<Promise<TaskModel[] | null>> {
-	return async (dispatch, getState) => {
-		const state = getState();
-		const oldData = selectGroupTasks(state, groupUid);
-
-		if (!force && oldData)
-			return oldData;
-
-		const ref  = collection(firestore, "groups", groupUid, "tasks").withConverter(taskFirestoreConverter);
-		const snap = await getDocs(ref);
-
-		const tasks = snap.docs.map(doc => doc.data());
-		dispatch(setTasks(groupUid, tasks));
-
-		return tasks.map(taskConverter);
-	}
-}
-
-export function fetchAllGroupTasks(force?: boolean): Thunk<Promise<TaskModel[] | null>> {
-	return async (dispatch, getState) => {
-		const state = getState();
-		const oldData = selectAllGroupTasks(state);
-
-		if (!force && oldData)
-			return oldData;
-
-		const userUid = selectCurrentUserUid(state);
-		if(!userUid)
-			return null;
-
-		const groupUids = selectCurrentUserGroupUids(state);
-		if(!groupUids)
-			return null;
-
-		for (const groupUid of groupUids) {
-			const ref  = collection(firestore, "groups", groupUid, "tasks").withConverter(taskFirestoreConverter);
-			const snap = await getDocs(ref);
-
-			const groupTasks = snap.docs.map(doc => doc.data());
-
-			dispatch(setTasks(groupUid, groupTasks));
-		}
-
-		return selectAllGroupTasks(state);
-	}
-}
-
-export function fetchOwnTasks(force?: boolean): Thunk<Promise<TaskModel[] | null>> {
+export function fetchAvailableTasks(force?: boolean): Thunk {
 	return async (dispatch, getState) => {
 		const state   = getState();
-		const oldData = selectOwnTasks(state);
+		const oldData = selectAvailableTasks(state);
 
 		if (!force && oldData)
 			return oldData;
 
-		const userUid = selectCurrentUserUid(state);
-		if(!userUid)
+		const tasks = await supabaseClient.from("tasks").select("*");
+
+		if (tasks.error) {
+			console.error(tasks.error);
 			return null;
+		}
 
-		const ref  = collection(firestore, "users", userUid, "tasks").withConverter(taskFirestoreConverter);
-		const snap = await getDocs(ref);
+		dispatch(setTasks(tasks.data));
 
-		const tasks = snap.docs.map(doc => doc.data());
-		dispatch(setTasks(null, tasks));
+		const tasksItems = await supabaseClient.from("task_items").select("*");
 
-		return tasks.map(taskConverter);
+		if (tasksItems.error) {
+			console.error(tasksItems.error);
+			return null;
+		}
+
+		dispatch(setTasksItems(tasksItems.data));
 	};
 }
 
-export function fetchAvailableTasks(force?: boolean): Thunk<Promise<TaskModel[] | null>> {
+export function updateTask(taskId: number): Thunk {
 	return async (dispatch, getState) => {
-		const ownTasks = await dispatch(fetchOwnTasks(force));
-		const groupTasks = await dispatch(fetchAllGroupTasks(force));
+		// const state = getState();
 
-		let allTasks: TaskModel[] = [];
-		if(ownTasks)
-			allTasks = allTasks.concat(ownTasks);
-		if(groupTasks)
-			allTasks = allTasks.concat(groupTasks);
+		// const tasks = groupUid ? state.tasks.groupTasks[groupUid] : state.tasks.ownTasks;
+		// const task = tasks.find(task => task.uid === taskUid)!;
 
-		return allTasks;
-	}
-}
+		// const ref = doc(
+		// 	firestore,
+		// 	task.isGroup ? "groups" : "users", task.ownerUid, "tasks", task.uid
+		// ).withConverter(taskFirestoreConverter);
 
-export function updateTask(groupUid : string | null, taskUid: string): Thunk {
-	return async (dispatch, getState) => {
-		const state = getState();
-
-		const tasks = groupUid ? state.tasks.groupTasks[groupUid] : state.tasks.ownTasks;
-		const task = tasks.find(task => task.uid === taskUid)!;
-
-		const ref = doc(
-			firestore,
-			task.isGroup ? "groups" : "users", task.ownerUid, "tasks", task.uid
-		).withConverter(taskFirestoreConverter);
-
-		await setDoc(ref, task);
+		// await setDoc(ref, task);
 	};
 }
 

@@ -1,29 +1,25 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { userConverter } from "./models";
 import { UsersMap } from "./slice";
 
 export const selectUser = createSelector(
 	[
-		(state: RootState, userUid: string) => state.users.users,
-		(state: RootState, userUid: string) => userUid
+		(state: RootState, userId: number) => state.users.users,
+		(state: RootState, userId: number) => userId
 	],
-	(users: UsersMap, userUid: string) => {
-		const reduxModel = users[userUid];
-		return reduxModel ? userConverter(reduxModel) : null;
-	}
+	(users: UsersMap, userId: number) => users[userId]
 );
 
-export const selectCurrentUserUid = (state: RootState) => state.users.currentUserUid;
+export const selectCurrentUserId = (state: RootState) => state.users.currentUserId;
 
-export const selectIsUserLoggedIn = (state: RootState) => selectCurrentUserUid(state) !== null;
+export const selectCurrentUserUuid = (state: RootState) => state.users.currentUserUuid;
+
+export const selectIsUserLoggedIn = (state: RootState) => selectCurrentUserUuid(state) !== null;
 
 export const selectCurrentUser = (state: RootState) => {
-	const currentUserUid = selectCurrentUserUid(state);
-	return currentUserUid ? selectUser(state, currentUserUid) : null;
+	const currentUserId = selectCurrentUserId(state);
+	return currentUserId ? selectUser(state, currentUserId) : null;
 };
 
-export const selectCurrentUserGroupUids = (state: RootState) => {
-	const currentUser = selectCurrentUser(state);
-	return currentUser?.groupUids;
-}
+export const selectCurrentUserGroupIds = (state: RootState) => 
+	selectCurrentUser(state)?.groups;

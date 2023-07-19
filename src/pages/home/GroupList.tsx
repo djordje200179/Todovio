@@ -18,7 +18,7 @@ export default function GroupList() {
     return (
         <ListGroup as="ul">
             {groups?.map(group =>
-                group ? <GroupView key={group.uid} group={group}/> : null
+                group ? <GroupView key={group.id} group={group}/> : null
             )}
         </ListGroup>
     );

@@ -3,22 +3,22 @@ import { useDispatch, useSelector } from "../../store/store";
 import {selectAvailableTasks} from "../../store/tasks/selectors";
 import { useEffect } from "react";
 import {fetchAvailableTasks} from "../../store/tasks/thunks";
-import {selectCurrentUserGroupUids, selectCurrentUserUid} from "../../store/users/selectors";
+import {selectCurrentUserGroupIds, selectCurrentUserId} from "../../store/users/selectors";
 
 export default function TaskList() {
-	const userUid = useSelector(selectCurrentUserUid);
-	const groupUids = useSelector(selectCurrentUserGroupUids);
+	const userId = useSelector(selectCurrentUserId);
+	const groupIds = useSelector(selectCurrentUserGroupIds);
 
 	const dispatch = useDispatch();
 
-	useEffect(() => { dispatch(fetchAvailableTasks(true)) }, [userUid, groupUids, dispatch]);
+	useEffect(() => { dispatch(fetchAvailableTasks(true)) }, [userId, groupIds, dispatch]);
 
 	const tasks = useSelector(selectAvailableTasks);
 
 	return (
 		<main className="d-flex flex-wrap bg-secondary">
 			{tasks?.map(task =>
-				<TaskView key={task.uid} task={task}/>
+				<TaskView key={task.id} task={task}/>
 			)}
 		</main>
 	);

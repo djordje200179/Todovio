@@ -1,20 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../../components/LoginForm";
 import { Card } from "react-bootstrap";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase";
+import supabaseClient from "../../supabase/client";
+import { AuthApiError } from "@supabase/supabase-js";
 
 export default function Form() {
 	const navigate = useNavigate();
 
 	async function onSignUp(email: string, password: string) {
-		try {
-			await createUserWithEmailAndPassword(auth, email, password);
+		const { data, error } = await supabaseClient.auth.signUp({
+			email: email,
+			password: password
+		});
 
+		if (data)
 			navigate("/", { replace: true });
-		} catch(e: any) {
-			if (e.code === "auth/email-already-in-use")
-				console.log("User exists");
+		else {
+			if (error instanceof AuthApiError)
+				console.log("User already exist");
 		}
 	}
 
