@@ -1,25 +1,39 @@
 import { TaskItemModel } from "../../store/tasks/slice";
 import { Form, InputGroup } from "react-bootstrap";
 import { ChangeEvent } from "react";
+import {useDispatch} from "../../store/store";
+import {changeTaskItemText, changeTaskItemCompleted} from "../../store/tasks/slice";
+import {updateTaskItem} from "../../store/tasks/thunks";
 
 interface Props {
 	item: TaskItemModel;
-	index: number;
-
-	onCompletedChanged: (index: number, newState: boolean) => void;
-	onTextChanging: (index: number, newText: string) => void;
-	onTextChanged: (index: number, newText: string) => void;
 }
 
-export function TaskItem({ item, index, onCompletedChanged, onTextChanging, onTextChanged }: Props) {
+export function TaskItem({ item }: Props) {
+	const dispatch = useDispatch();
+
+	function onCompletedChanged(newState: boolean) {
+		dispatch(changeTaskItemCompleted(item.task_id, item.item_id, newState));
+		dispatch(updateTaskItem(item));
+	}
+
+	function onTextChanging(newText: string) {
+		dispatch(changeTaskItemText(item.task_id, item.item_id, newText));
+	}
+
+	function onTextChanged(newText: string) {
+		dispatch(changeTaskItemText(item.task_id, item.item_id, newText));
+		dispatch(updateTaskItem(item));
+	}
+
 	return (
 		<li className="px-0 pt-1">
 			<InputGroup>
 				<InputGroup.Checkbox value={item.completed}
-				                     onChange={(event: ChangeEvent<HTMLInputElement>) => onCompletedChanged(index, event.target.checked)}/>
+				                     onChange={(event: ChangeEvent<HTMLInputElement>) => onCompletedChanged(event.target.checked)} />
 				<Form.Control value={item.text}
-							  onBlur={event => onTextChanged(index, event.target.value)}
-				              onChange={event => onTextChanging(index, event.target.value)}/>
+							  onBlur={event => onTextChanged(event.target.value)}
+				              onChange={event => onTextChanging(event.target.value)} />
 			</InputGroup>
 		</li>
 

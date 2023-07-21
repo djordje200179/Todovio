@@ -1,6 +1,6 @@
 import { Thunk } from "../store";
 import { selectAvailableTasks } from "./selectors";
-import { setTasks, setTasksItems } from "./slice";
+import { TaskItemModel, TaskModel, setTasks, setTasksItems } from "./slice";
 import supabaseClient from "../../supabase/client";
 
 export function fetchAvailableTasks(force?: boolean): Thunk {
@@ -15,7 +15,7 @@ export function fetchAvailableTasks(force?: boolean): Thunk {
 
 		if (tasks.error) {
 			console.error(tasks.error);
-			return null;
+			return;
 		}
 
 		dispatch(setTasks(tasks.data));
@@ -24,27 +24,35 @@ export function fetchAvailableTasks(force?: boolean): Thunk {
 
 		if (tasksItems.error) {
 			console.error(tasksItems.error);
-			return null;
+			return;
 		}
 
 		dispatch(setTasksItems(tasksItems.data));
 	};
 }
 
-export function updateTask(taskId: number): Thunk {
+export function updateTask(task: TaskModel): Thunk {
 	return async (dispatch, getState) => {
-		// const state = getState();
+		const { error } = await supabaseClient.from("tasks").update(task).eq("id", task.id);
 
-		// const tasks = groupUid ? state.tasks.groupTasks[groupUid] : state.tasks.ownTasks;
-		// const task = tasks.find(task => task.uid === taskUid)!;
-
-		// const ref = doc(
-		// 	firestore,
-		// 	task.isGroup ? "groups" : "users", task.ownerUid, "tasks", task.uid
-		// ).withConverter(taskFirestoreConverter);
-
-		// await setDoc(ref, task);
+		if (error) {
+			console.error(error);
+			return;
+		}
 	};
+}
+
+export function updateTaskItem(taskItem: TaskItemModel): Thunk {
+	return async (dispatch, getState) => {
+		const { error } = await supabaseClient.from("task_items")
+			.update(taskItem)
+			.eq("task_id", taskItem.task_id).eq("item_id", taskItem.item_id);
+
+		if (error) {
+			console.error(error);
+			return;
+		}
+	}
 }
 
 export function createNewTask(text: string): Thunk {
