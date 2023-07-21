@@ -63,7 +63,7 @@ export default function TaskView({ task }: Props) {
 				                 color="white" className={styles.arrowIcon}/>
 			</Card.Header>
 
-			<Card.Subtitle className="text-muted text-end mt-1 me-2">{task.edited_at}</Card.Subtitle>
+			<Card.Subtitle className="text-muted text-end mt-1 me-2">{new Date(task.edited_at).toLocaleDateString()}</Card.Subtitle>
 
 			<Card.Body>
 				{showItems && (
