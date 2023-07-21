@@ -27,5 +27,5 @@ export const selectTaskItems = createSelector(
 		(state: RootState, taskId: number) => state.tasks.taskItems,
 		(state: RootState, taskId: number) => taskId
 	],
-	(taskItems: TasksItemsMap, taskId: number) => taskItems[taskId]
+	(taskItems: TasksItemsMap, taskId: number) => taskItems[taskId] || []
 );
