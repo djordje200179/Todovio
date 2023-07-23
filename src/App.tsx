@@ -38,9 +38,11 @@ export default function App() {
 		<Fragment>
 			<Header />
 
-			<Routes>
-				<Route path="/" element={<HomePage/>}/>
-			</Routes>
+			<main className="flex-grow-1 bg-secondary">
+				<Routes>
+					<Route path="/" element={<HomePage/>}/>
+				</Routes>
+			</main>
 		</Fragment>
 	);
 }

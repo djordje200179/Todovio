@@ -6,7 +6,7 @@ import classnames from "classnames";
 
 export default function Page() {
 	return (
-		<section className={classnames("w-50", "mx-auto", styles.authSection)}>
+		<section className={classnames("w-50", "mx-auto", "bg-dark", "mt-3", "p-3", "rounded", styles.authSection)}>
 			<Auth supabaseClient={supabaseClient} 
 				  appearance={{
 					theme: ThemeSupa,

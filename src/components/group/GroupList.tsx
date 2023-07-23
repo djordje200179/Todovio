@@ -13,7 +13,7 @@ export default function GroupList() {
     const groups = useSelector(selectCurrentUserGroups);
 
     return (
-        <ListGroup as="ul">
+        <ListGroup as="ul" className="h-100">
             {groups?.map(group =>
                 group ? <GroupView key={group.id} group={group}/> : null
             )}
