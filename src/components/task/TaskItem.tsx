@@ -1,9 +1,9 @@
-import { TaskItemModel } from "../../store/tasks/slice";
+import { TaskItemModel } from "store/tasks/slice";
 import { Form, InputGroup } from "react-bootstrap";
 import { ChangeEvent } from "react";
-import {useDispatch} from "../../store/store";
-import {changeTaskItemText, changeTaskItemCompleted} from "../../store/tasks/slice";
-import {updateTaskItem} from "../../store/tasks/thunks";
+import { useDispatch } from "store/store";
+import { changeTaskItemText, changeTaskItemCompleted } from "store/tasks/slice";
+import { updateTaskItem } from "store/tasks/thunks";
 
 interface Props {
 	item: TaskItemModel;

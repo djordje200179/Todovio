@@ -1,18 +1,15 @@
 import {Fragment, useEffect} from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import HomePage from "./pages/home/HomePage";
-import SignUpPage from "./pages/signup/SignUpPage";
+import HomePage from "pages/home/HomePage";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { fas, 
-	faListCheck, faAngleDown, faEnvelope, faKey, faTrashCan
-} from "@fortawesome/free-solid-svg-icons";
-import Header from "./navbar/Header";
-import {useDispatch} from "./store/store";
-import {resetUsers, setCurrentUserUuid} from "./store/users/slice";
-import {resetGroups} from "./store/groups/slice";
-import {resetTasks} from "./store/tasks/slice";
-import supabaseClient from "./supabase/client";
+import { fas, faListCheck, faAngleDown, faEnvelope, faKey, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import Header from "navbar/Header";
+import { useDispatch } from "store/store";
+import { resetUsers, setCurrentUserUuid } from "store/users/slice";
+import { resetGroups } from "store/groups/slice";
+import { resetTasks } from "store/tasks/slice";
+import supabaseClient from "supabase/client";
 
 library.add(fas, faListCheck, faAngleDown, faEnvelope, faKey, faTrashCan);
 
@@ -43,7 +40,6 @@ export default function App() {
 
 			<Routes>
 				<Route path="/" element={<HomePage/>}/>
-				<Route path="/signup" element={<SignUpPage/>}/>
 			</Routes>
 		</Fragment>
 	);

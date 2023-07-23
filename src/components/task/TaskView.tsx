@@ -1,12 +1,12 @@
 import { Card } from "react-bootstrap";
 import styles from "./TaskView.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TaskModel } from "../../store/tasks/slice";
+import { TaskModel } from "store/tasks/slice";
 import { useState } from "react";
 import { TaskItem } from "./TaskItem";
-import {selectTaskItems} from "../../store/tasks/selectors";
+import { selectTaskItems } from "store/tasks/selectors";
 import classNames from "classnames";
-import { useSelector } from "../../store/store";
+import { useSelector } from "store/store";
 
 interface Props {
 	task: TaskModel;

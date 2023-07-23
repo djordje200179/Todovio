@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useDispatch } from "../store/store";
 import { createNewTask } from "../store/tasks/thunks";
 import { Button, Form } from "react-bootstrap";

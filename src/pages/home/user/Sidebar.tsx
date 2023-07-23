@@ -1,5 +1,5 @@
-import GroupList from "./GroupList";
-import {Button} from "react-bootstrap";
+import GroupList from "components/group/GroupList";
+import { Button } from "react-bootstrap";
 import styles from "./Sidebar.module.scss";
 import classNames from "classnames";
 

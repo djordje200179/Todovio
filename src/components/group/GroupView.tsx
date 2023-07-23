@@ -1,5 +1,5 @@
-import {GroupModel} from "../../store/groups/slice";
-import {ListGroup} from "react-bootstrap";
+import { GroupModel } from "store/groups/slice";
+import { ListGroup } from "react-bootstrap";
 
 interface Props {
     group: GroupModel;

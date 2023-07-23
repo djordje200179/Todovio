@@ -1,8 +1,7 @@
-import { useSelector } from "../store/store";
-import { selectIsUserLoggedIn } from "../store/users/selectors";
+import { useSelector } from "store/store";
+import { selectIsUserLoggedIn } from "store/users/selectors";
 import { Badge } from "./Badge";
-import AuthControls from "./AuthControls";
-import UserControls from "./UserControls";
+import UserControls from "./user/Controls";
 import { Navbar } from "react-bootstrap";
 
 export default function Header() {
@@ -15,7 +14,7 @@ export default function Header() {
 				<Badge/>
 			</Navbar.Brand>
 
-			{loggedIn ? <UserControls/> : <AuthControls/>}
+			{ loggedIn && <UserControls/> }
 		</Navbar>
 	);
 }
