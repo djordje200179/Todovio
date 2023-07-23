@@ -1,30 +1,28 @@
 import { Thunk } from "../store";
-import { UserModel, setCurrentUserId, setUser } from "./slice";
+import { setCurrentUserId, setUser } from "./slice";
 import {selectCurrentUserId, selectCurrentUserUuid, selectUser} from "./selectors";
 import supabaseClient from "../../supabase/client";
 
-export function fetchUser(id: number, force?: boolean): Thunk<Promise<UserModel | null>> {
+export function fetchUser(id: number, force?: boolean): Thunk {
 	return async (dispatch, getState) => {
 		const state = getState();
 		const oldData = selectUser(state, id);
 
 		if(!force && oldData)
-			return oldData;
+			return;
 
 		const { data, error } = await supabaseClient.from("users").select("*").eq("id", id).single();
 
 		if (error) {
 			console.error(error);
-			return null;
+			return;
 		}
 
 		dispatch(setUser(data));
-
-		return data;
 	};
 }
 
-export function fetchCurrentUser(force?:boolean) : Thunk<Promise<UserModel | null>> {
+export function fetchCurrentUser(force?: boolean) : Thunk {
 	return async (dispatch, getState) => {
 		const state = getState();
 		const uuid = selectCurrentUserUuid(state);
@@ -38,19 +36,17 @@ export function fetchCurrentUser(force?:boolean) : Thunk<Promise<UserModel | nul
 			const oldData = selectUser(state, id);
 
 			if(!force && oldData)
-				return oldData;
+				return;
 		}		
 
 		const { data, error } = await supabaseClient.from("users").select("*").eq("uuid", uuid).single();
 
 		if (error) {
 			console.error(error);
-			return null;
+			return;
 		}
 
 		dispatch(setUser(data));
 		dispatch(setCurrentUserId(data.id));
-
-		return data;
 	};
 }
