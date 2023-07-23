@@ -51,7 +51,7 @@ export default function TaskView({ task }: Props) {
 			<Card.Body>
 				{showItems && (
 					<ul className={styles.itemList}>
-						{taskItems.map(item => <TaskItem item={item} key={item.item_id} />)}
+						{taskItems?.map(item => <TaskItem item={item} key={item.item_id} />)}
 					</ul>
 				)}
 			</Card.Body>
