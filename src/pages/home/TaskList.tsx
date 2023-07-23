@@ -3,15 +3,9 @@ import { useDispatch, useSelector } from "../../store/store";
 import {selectAvailableTasks} from "../../store/tasks/selectors";
 import { useEffect } from "react";
 import {fetchAvailableTasks} from "../../store/tasks/thunks";
-import {selectCurrentUserGroupIds, selectCurrentUserId} from "../../store/users/selectors";
 
-export default function TaskList() {
-	const userId = useSelector(selectCurrentUserId);
-	const groupIds = useSelector(selectCurrentUserGroupIds);
-
-	const dispatch = useDispatch();
-
-	useEffect(() => { dispatch(fetchAvailableTasks(true)) }, [userId, groupIds, dispatch]);
+export default function TaskList() {	const dispatch = useDispatch();
+	useEffect(() => { dispatch(fetchAvailableTasks()) }, [dispatch]);
 
 	const tasks = useSelector(selectAvailableTasks);
 

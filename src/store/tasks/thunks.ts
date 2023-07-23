@@ -8,7 +8,7 @@ export function fetchAvailableTasks(force?: boolean): Thunk {
 		const state   = getState();
 		const oldData = selectAvailableTasks(state);
 
-		if (!force && oldData)
+		if (!force && oldData.length > 0)
 			return oldData;
 
 		const tasks = await supabaseClient.from("tasks").select("*");
