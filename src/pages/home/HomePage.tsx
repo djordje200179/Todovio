@@ -6,7 +6,7 @@ import Index from "./Index";
 import Sidebar from "./Sidebar";
 
 export default function HomePage() {
-	const loggedIn = useSelector(state => selectIsUserLoggedIn(state));
+	const loggedIn = useSelector(selectIsUserLoggedIn);
 
 	const loggedInView = (
 		<div>

@@ -1,15 +1,16 @@
-import {GroupsMap} from "./slice";
 import {RootState} from "../store";
-import {createSelector} from "@reduxjs/toolkit";
 import {selectCurrentUserGroupIds} from "../users/selectors";
+import { memoize } from 'proxy-memoize';
 
-export const selectGroup = createSelector(
-    [
-        (state: RootState, groupId: number) => state.groups.groups,
-        (state: RootState, groupId: number) => groupId
-    ],
-    (groups: GroupsMap, groupId: number) =>  groups[groupId]
-);
+export function selectGroup(state: RootState, groupId: number) {
+	return state.groups.groups[groupId];
+}
 
-export const selectCurrentUserGroups = (state: RootState) => 
-    selectCurrentUserGroupIds(state)?.map(groupId => selectGroup(state, groupId));
+export const selectCurrentUserGroups = memoize(function (state: RootState) {
+	const currentUserGroupIds = selectCurrentUserGroupIds(state);
+
+	if (!currentUserGroupIds)
+		return null;
+
+	return currentUserGroupIds.map(groupId => selectGroup(state, groupId));
+});

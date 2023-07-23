@@ -6,7 +6,7 @@ import UserControls from "./UserControls";
 import { Navbar } from "react-bootstrap";
 
 export default function Header() {
-	const loggedIn = useSelector(state => selectIsUserLoggedIn(state));
+	const loggedIn = useSelector(selectIsUserLoggedIn);
 
 	// TODO: Change Navbar.Brand to Link
 	return (
