@@ -3,7 +3,7 @@ import { setCurrentUserId, setUser } from "./slice";
 import {selectCurrentUserId, selectCurrentUserUuid, selectUser} from "./selectors";
 import supabaseClient from "../../supabase/client";
 
-export function fetchUser(id: number, force?: boolean): Thunk {
+export function fetchUser(id: number, force?: boolean): Thunk<Promise<void>> {
 	return async (dispatch, getState) => {
 		const state = getState();
 		const oldData = selectUser(state, id);
@@ -22,13 +22,14 @@ export function fetchUser(id: number, force?: boolean): Thunk {
 	};
 }
 
-export function fetchCurrentUser(force?: boolean) : Thunk {
+export function fetchCurrentUser(force?: boolean) : Thunk<Promise<void>> {
 	return async (dispatch, getState) => {
 		const state = getState();
 		const uuid = selectCurrentUserUuid(state);
+		
 		if (!uuid) {
 			console.error("No user logged in");
-			return null;
+			return;
 		}
 
 		const id = selectCurrentUserId(state);

@@ -12,18 +12,18 @@ interface Props {
 export function TaskItem({ item }: Props) {
 	const dispatch = useDispatch();
 
-	function onCompletedChanged(newState: boolean) {
+	async function onCompletedChanged(newState: boolean) {
 		dispatch(changeTaskItemCompleted(item.task_id, item.item_id, newState));
-		dispatch(updateTaskItem(item));
+		await dispatch(updateTaskItem(item));
 	}
 
 	function onTextChanging(newText: string) {
 		dispatch(changeTaskItemText(item.task_id, item.item_id, newText));
 	}
 
-	function onTextChanged(newText: string) {
+	async function onTextChanged(newText: string) {
 		dispatch(changeTaskItemText(item.task_id, item.item_id, newText));
-		dispatch(updateTaskItem(item));
+		await dispatch(updateTaskItem(item));
 	}
 
 	return (

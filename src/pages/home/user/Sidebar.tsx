@@ -8,8 +8,8 @@ import { createNewGroup } from "store/groups/thunks";
 export default function Sidebar() {
     const dispatch = useDispatch();
     
-    function createGroup() {
-        dispatch(createNewGroup("New group"));
+    async function createGroup() {
+        await dispatch(createNewGroup("New group"));
     }
 
     return (

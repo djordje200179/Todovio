@@ -8,9 +8,9 @@ export default function TaskForm() {
 
 	const dispatch = useDispatch();
 
-	function onAdd(e: FormEvent) {
+	async function onAdd(e: FormEvent) {
 		e.preventDefault();
-		dispatch(createNewTask(text));
+		await dispatch(createNewTask(text));
 	}
 
 	return (

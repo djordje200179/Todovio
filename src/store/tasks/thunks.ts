@@ -3,13 +3,13 @@ import { selectAvailableTasks } from "./selectors";
 import { TaskItemModel, TaskModel, setTasks, setTasksItems } from "./slice";
 import supabaseClient from "../../supabase/client";
 
-export function fetchAvailableTasks(force?: boolean): Thunk {
+export function fetchAvailableTasks(force?: boolean): Thunk<Promise<void>> {
 	return async (dispatch, getState) => {
 		const state   = getState();
 		const oldData = selectAvailableTasks(state);
 
 		if (!force && oldData.length > 0)
-			return oldData;
+			return;
 
 		const tasks = await supabaseClient.from("tasks").select("*");
 
@@ -31,7 +31,7 @@ export function fetchAvailableTasks(force?: boolean): Thunk {
 	};
 }
 
-export function updateTask(task: TaskModel): Thunk {
+export function updateTask(task: TaskModel): Thunk<Promise<void>> {
 	return async (dispatch, getState) => {
 		const { error } = await supabaseClient.from("tasks").update(task).eq("id", task.id);
 
@@ -42,7 +42,7 @@ export function updateTask(task: TaskModel): Thunk {
 	};
 }
 
-export function updateTaskItem(taskItem: TaskItemModel): Thunk {
+export function updateTaskItem(taskItem: TaskItemModel): Thunk<Promise<void>> {
 	return async (dispatch, getState) => {
 		const { error } = await supabaseClient.from("task_items")
 			.update(taskItem)
@@ -55,7 +55,7 @@ export function updateTaskItem(taskItem: TaskItemModel): Thunk {
 	}
 }
 
-export function createNewTask(text: string): Thunk {
+export function createNewTask(text: string): Thunk<Promise<void>> {
 	return async (dispatch, getState) => {
 		// const newTaskRequest = {
 		// 	text,
