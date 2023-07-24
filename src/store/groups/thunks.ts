@@ -1,17 +1,10 @@
 import { Thunk } from "../store";
-import { selectGroup } from "./selectors";
 import { setGroup } from "./slice";
 import supabaseClient from "supabase/client";
 import { selectCurrentUserGroupIds } from "../users/selectors";
 
-export function fetchGroup(id: number, force?: boolean): Thunk<Promise<void>> {
+export function fetchGroup(id: number): Thunk<Promise<void>> {
 	return async (dispatch, getState) => {
-		const state = getState();
-		const oldData = selectGroup(state, id);
-
-		if(!force && oldData)
-			return;
-
 		const { data, error } = await supabaseClient.from("groups").select("*").eq("id", id).single();
 
 		if (error) {

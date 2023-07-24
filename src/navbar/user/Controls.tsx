@@ -1,16 +1,10 @@
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "store/store";
+import { useSelector } from "store/store";
 import { selectCurrentUser } from "store/users/selectors";
 import { Button, Navbar } from "react-bootstrap";
-import { useEffect } from "react";
-import { fetchCurrentUser } from "store/users/thunks";
 import supabaseClient from "supabase/client";
 
 export default function UserControls() {
-	const dispatch = useDispatch();
-
-	useEffect(() => { dispatch(fetchCurrentUser()); }, [dispatch]);
-
 	const user = useSelector(selectCurrentUser);
 
 	return (

@@ -1,13 +1,8 @@
 import TaskView from "./TaskView";
-import { useDispatch, useSelector } from "store/store";
+import { useSelector } from "store/store";
 import { selectAvailableTasks } from "store/tasks/selectors";
-import { useEffect } from "react";
-import { fetchAvailableTasks } from "store/tasks/thunks";
 
-export default function TaskList() {	
-	const dispatch = useDispatch();
-	useEffect(() => { dispatch(fetchAvailableTasks()) }, [dispatch]);
-
+export default function TaskList() {
 	const tasks = useSelector(selectAvailableTasks);
 
 	return (

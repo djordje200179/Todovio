@@ -1,16 +1,9 @@
 import { Thunk } from "../store";
-import { selectAvailableTasks } from "./selectors";
 import { TaskItemModel, TaskModel, setTasks, setTasksItems } from "./slice";
 import supabaseClient from "supabase/client";
 
-export function fetchAvailableTasks(force?: boolean): Thunk<Promise<void>> {
+export function fetchAvailableTasks(): Thunk<Promise<void>> {
 	return async (dispatch, getState) => {
-		const state   = getState();
-		const oldData = selectAvailableTasks(state);
-
-		if (!force && oldData.length > 0)
-			return;
-
 		const tasks = await supabaseClient.from("tasks").select("*");
 
 		if (tasks.error) {
