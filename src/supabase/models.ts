@@ -125,7 +125,7 @@ export interface Database {
           uuid: string
         }
         Insert: {
-          groups: number[]
+          groups?: number[]
           id?: number
           name: string
           uuid: string
@@ -142,6 +142,12 @@ export interface Database {
             columns: ["id"]
             referencedRelation: "task_owners"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "users_uuid_fkey"
+            columns: ["uuid"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -150,7 +156,12 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_new_group: {
+        Args: {
+          group_name: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
