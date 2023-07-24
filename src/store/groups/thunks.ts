@@ -1,7 +1,7 @@
 import { Thunk } from "../store";
 import { selectGroup } from "./selectors";
 import { setGroup } from "./slice";
-import supabaseClient from "../../supabase/client";
+import supabaseClient from "supabase/client";
 import { selectCurrentUserGroupIds } from "../users/selectors";
 
 export function fetchGroup(id: number, force?: boolean): Thunk<Promise<void>> {

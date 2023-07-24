@@ -1,5 +1,5 @@
-import {RootState} from "../store";
-import {selectCurrentUserGroupIds} from "../users/selectors";
+import { RootState } from "../store";
+import { selectCurrentUserGroupIds } from "../users/selectors";
 import { memoize } from 'proxy-memoize';
 
 export function selectGroup(state: RootState, groupId: number) {

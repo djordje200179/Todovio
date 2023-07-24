@@ -1,7 +1,7 @@
 import { Thunk } from "../store";
 import { setCurrentUserId, setUser } from "./slice";
-import {selectCurrentUserId, selectCurrentUserUuid, selectUser} from "./selectors";
-import supabaseClient from "../../supabase/client";
+import { selectCurrentUserId, selectCurrentUserUuid, selectUser } from "./selectors";
+import supabaseClient from "supabase/client";
 
 export function fetchUser(id: number, force?: boolean): Thunk<Promise<void>> {
 	return async (dispatch, getState) => {

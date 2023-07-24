@@ -1,7 +1,7 @@
 import { Thunk } from "../store";
 import { selectAvailableTasks } from "./selectors";
 import { TaskItemModel, TaskModel, setTasks, setTasksItems } from "./slice";
-import supabaseClient from "../../supabase/client";
+import supabaseClient from "supabase/client";
 
 export function fetchAvailableTasks(force?: boolean): Thunk<Promise<void>> {
 	return async (dispatch, getState) => {

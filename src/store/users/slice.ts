@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Database } from "../../supabase/models";
+import { Database } from "supabase/models";
 
 export type UserModel = Database["public"]["Tables"]["users"]["Row"];
 export type UsersMap = { [id: number]: UserModel };

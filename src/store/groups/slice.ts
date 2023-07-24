@@ -1,5 +1,5 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {Database} from "../../supabase/models";
+import { createSlice } from "@reduxjs/toolkit";
+import { Database } from "supabase/models";
 
 export type GroupModel = Database["public"]["Tables"]["groups"]["Row"];
 export type GroupsMap = { [id: string]: GroupModel };

@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
-import { useDispatch } from "../store/store";
-import { createNewTask } from "../store/tasks/thunks";
+import { useDispatch } from "store/store";
+import { createNewTask } from "store/tasks/thunks";
 import { Button, Form } from "react-bootstrap";
 
 export default function TaskForm() {

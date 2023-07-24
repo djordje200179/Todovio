@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Database } from "../../supabase/models";
+import { Database } from "supabase/models";
 
 export type TaskModel = Database["public"]["Tables"]["tasks"]["Row"];
 export type TaskItemModel = Database["public"]["Tables"]["task_items"]["Row"];
