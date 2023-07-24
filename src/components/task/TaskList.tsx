@@ -13,7 +13,7 @@ export default function TaskList() {
 	return (
 		<main className="d-flex flex-wrap">
 			{tasks?.map(task =>
-				<TaskView key={task.id} task={task}/>
+				task && <TaskView key={task.id} task={task}/>
 			)}
 		</main>
 	);
